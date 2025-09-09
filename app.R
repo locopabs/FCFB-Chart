@@ -36,6 +36,28 @@ ui <- page_sidebar(
               "Season",
               "Select the season",
               list("Season 10" = 10, "Season 11" = 11)
+            ),
+            selectInput(
+              "Conference",
+              "Select a conference",
+              list("All" = NA,
+                   "ACC" = "ACC",
+                   "American" = "AMERICAN",
+                   "Big 12" = "BIG_12",
+                   "Big Sky" = "BIG_SKY",
+                   "Big 10" = "BIG_TEN",
+                   "Colonial" = "COLONIAL",
+                   "Independent" = "FBS_INDEPENDENT",
+                   "Ivy League" = "IVY_LEAGUE",
+                   "MAC" = "MAC",
+                   "Missouri Valley" = "MISSOURI_VALLEY",
+                   "Mountain West" = "MOUNTAIN_WEST",
+                   "NEC" = "NEC",
+                   "PAC 12" = "PAC_12",
+                   "SEC" = "SEC",
+                   "Southland" = "SOUTHLAND",
+                   "Sun Belt" = "SUN_BELT"
+              )
             )
         ),
 
@@ -62,14 +84,22 @@ server <- function(input, output) {
         #diffline = sum(ad[ad$season == input$season]$sumD.x) / sum(ad[ad$season == input$season]$Off_plays)
         
         ad1 <- ad[ad$season == input$Season,]
-        ptitle <- paste('Season',input$Season,'average difference',sep = ' ')
+        max_lim <- max(ad1$Off_avg_diff)
+        min_lim <- min(ad1$Off_avg_diff)
         diffline <- sum(ad1$sumD.x) / sum(ad1$Off_plays)
         
+        if (input$Conference != "NA") {
+          ad1 <- ad1[ad1$conference == input$Conference,]
+        }
+
+        ptitle <- paste('Season',input$Season,'average difference',sep = ' ')
+        
+
         plot1 <- ggplot(ad1, aes(x = Off_avg_diff, y = Def_avg_diff, tooltip = tooltip)) + geom_image_interactive(aes(image = logo),alpha = 0.5) +
           labs(x = 'Average Difference on Offense', y = 'Average Difference on Defense', title = ptitle) +
-          theme(plot.title = element_text(hjust = 0.5)) + 
+          theme(plot.title = element_text(hjust = 0.5)) +
           theme(plot.subtitle = element_text(hjust = 0.5)) +
-          xlim(max(ad1$Off_avg_diff),min(ad1$Off_avg_diff)) +
+          xlim(max_lim, min_lim) +
           geom_vline(xintercept =  diffline, color = "red", linetype = "dashed", alpha=0.5) +
           geom_hline(yintercept = diffline, color = "red", linetype = "dashed", alpha=0.5)
         
