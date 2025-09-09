@@ -28,7 +28,7 @@ ad <- readRDS(avg_diff)
 ui <- page_sidebar(
 
     # Application title
-    title = "First FCFB Shiny",
+    title = "FCFB Statistics!",
 
     # Sidebar with a slider input for number of bins 
     sidebar = sidebar(
