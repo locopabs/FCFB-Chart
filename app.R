@@ -14,6 +14,7 @@ library(tidyverse)
 
 library(ggplot2)
 library(ggimage)
+library(ggiraph)
 
 library(bslib)
 
@@ -39,13 +40,13 @@ ui <- page_sidebar(
         ),
 
     # Show a plot of the generated distribution
-    plotOutput("distPlot")
+    girafeOutput("distPlot")
 )
 
 # Define server logic required to draw a histogram-----
 server <- function(input, output) {
 
-    output$distPlot <- renderPlot({
+    output$distPlot <- renderGirafe({
         # generate bins based on input$bins from ui.R
         #x    <- faithful[, 2]
         #bins <- seq(min(x), max(x), length.out = input$bins + 1)
@@ -64,13 +65,15 @@ server <- function(input, output) {
         ptitle <- paste('Season',input$Season,'average difference',sep = ' ')
         diffline <- sum(ad1$sumD.x) / sum(ad1$Off_plays)
         
-        ggplot(ad1, aes(x = Off_avg_diff, y = Def_avg_diff, tooltip = tooltip)) + geom_image(aes(image = logo),alpha = 0.5) +
+        plot1 <- ggplot(ad1, aes(x = Off_avg_diff, y = Def_avg_diff, tooltip = tooltip)) + geom_image_interactive(aes(image = logo),alpha = 0.5) +
           labs(x = 'Average Difference on Offense', y = 'Average Difference on Defense', title = ptitle) +
           theme(plot.title = element_text(hjust = 0.5)) + 
           theme(plot.subtitle = element_text(hjust = 0.5)) +
           xlim(max(ad1$Off_avg_diff),min(ad1$Off_avg_diff)) +
           geom_vline(xintercept =  diffline, color = "red", linetype = "dashed", alpha=0.5) +
           geom_hline(yintercept = diffline, color = "red", linetype = "dashed", alpha=0.5)
+        
+        girafe(ggobj = plot1,options = list(opts_zoom(min = 1, max = 5) ) )
       
     })
 }
