@@ -86,6 +86,8 @@ server <- function(input, output) {
         ad1 <- ad[ad$season == input$Season,]
         max_lim <- max(ad1$Off_avg_diff)
         min_lim <- min(ad1$Off_avg_diff)
+        max_lym <- max(ad1$Def_avg_diff)
+        min_lym <- min(ad1$Def_avg_diff)
         diffline <- sum(ad1$sumD.x) / sum(ad1$Off_plays)
         
         if (input$Conference != "NA") {
@@ -100,6 +102,7 @@ server <- function(input, output) {
           theme(plot.title = element_text(hjust = 0.5)) +
           theme(plot.subtitle = element_text(hjust = 0.5)) +
           xlim(max_lim, min_lim) +
+          ylim(min_lym, max_lym) +
           geom_vline(xintercept =  diffline, color = "red", linetype = "dashed", alpha=0.5) +
           geom_hline(yintercept = diffline, color = "red", linetype = "dashed", alpha=0.5)
         
