@@ -61,12 +61,16 @@ server <- function(input, output) {
         #diffline = sum(ad[ad$season == input$season]$sumD.x) / sum(ad[ad$season == input$season]$Off_plays)
         
         ad1 <- ad[ad$season == input$Season,]
+        ptitle <- paste('Season',input$Season,'average difference',sep = ' ')
+        diffline <- sum(ad1$sumD.x) / sum(ad1$Off_plays)
         
         ggplot(ad1, aes(x = Off_avg_diff, y = Def_avg_diff, tooltip = tooltip)) + geom_image(aes(image = logo),alpha = 0.5) +
-          labs(x = 'Average Difference on Offense', y = 'Average Difference on Defense', title = 'Season 11 average difference') +
+          labs(x = 'Average Difference on Offense', y = 'Average Difference on Defense', title = ptitle) +
           theme(plot.title = element_text(hjust = 0.5)) + 
           theme(plot.subtitle = element_text(hjust = 0.5)) +
-          xlim(max(ad1$Off_avg_diff),min(ad1$Off_avg_diff))
+          xlim(max(ad1$Off_avg_diff),min(ad1$Off_avg_diff)) +
+          geom_vline(xintercept =  diffline, color = "red", linetype = "dashed", alpha=0.5) +
+          geom_hline(yintercept = diffline, color = "red", linetype = "dashed", alpha=0.5)
       
     })
 }
