@@ -36,7 +36,7 @@ ui <- page_navbar(
     selectInput(
       "Season",
       "Select the season",
-      list("Season 10" = 10, "Season 11" = 11)
+      list("Season 10" = 10, "Season 11" = 11), selected = max(ad$season), multiple = FALSE
     ),
     selectInput(
       "Conference",
