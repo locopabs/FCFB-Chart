@@ -78,17 +78,22 @@ server <- function(input, output) {
 
   
   output$distPlot <- renderGirafe({
+    #Filter to the season
     ad1 <- ad[ad$season == input$Season,]
+    
+    #Static chart parameters, shouldn't change as conferences change
+    diffline <- sum(ad1$sumD.x) / sum(ad1$Off_plays)
+    max_lim <- max(ad1$Off_avg_diff)
+    min_lim <- min(ad1$Off_avg_diff)
+    max_lym <- max(ad1$Def_avg_diff)
+    min_lym <- min(ad1$Def_avg_diff)
     
     if (input$Conference != "NA") {
       ad1 <- ad1[ad1$conference == input$Conference,]
     }
     
-    max_lim <- max(ad1$Off_avg_diff)
-    min_lim <- min(ad1$Off_avg_diff)
-    max_lym <- max(ad1$Def_avg_diff)
-    min_lym <- min(ad1$Def_avg_diff)
-    diffline <- sum(ad1$sumD.x) / sum(ad1$Off_plays)
+    
+    
     p1title <- paste('Season',input$Season,'average difference',sep = ' ')
     
     plot1 <- ggplot(ad1, aes(x = Off_avg_diff, y = Def_avg_diff, tooltip = tooltip)) + geom_image_interactive(aes(image = logo),alpha = 0.5) +
@@ -104,7 +109,10 @@ server <- function(input, output) {
   })
   
   output$successPlot <- renderGirafe({
+    #Filter to the season
     ad1 <- ad[ad$season == input$Season,]
+    
+    #Static chart parameters, shouldn't change when conference changes
     min_o_sp <- min(ad1$s_off_sp)
     max_o_sp <- max(ad1$s_off_sp)
     min_d_sp <- min(ad1$s_def_sp)
