@@ -65,7 +65,7 @@ ui <- page_navbar(
   # Nav Panel 01
   nav_panel(title = 'Average Diff', 
             # Show a plot of the generated distribution
-            girafeOutput("distPlot")),
+            girafeOutput("diffPlot")),
   
   # Nav Panel 02
   nav_panel(title = 'Success Rate',
@@ -77,7 +77,7 @@ ui <- page_navbar(
 server <- function(input, output) {
 
   
-  output$distPlot <- renderGirafe({
+  output$diffPlot <- renderGirafe({
     #Filter to the season
     ad1 <- ad[ad$season == input$Season,]
     
@@ -92,11 +92,10 @@ server <- function(input, output) {
       ad1 <- ad1[ad1$conference == input$Conference,]
     }
     
-    
-    
     p1title <- paste('Season',input$Season,'average difference',sep = ' ')
     
-    plot1 <- ggplot(ad1, aes(x = Off_avg_diff, y = Def_avg_diff, tooltip = tooltip)) + geom_image_interactive(aes(image = logo),alpha = 0.5) +
+    plot1 <- ggplot(ad1, aes(x = Off_avg_diff, y = Def_avg_diff, tooltip = tooltip)) + 
+      geom_image_interactive(aes(image = logo)) +
       labs(x = 'Average Difference on Offense', y = 'Average Difference on Defense', title = p1title) +
       theme(plot.title = element_text(hjust = 0.5)) +
       theme(plot.subtitle = element_text(hjust = 0.5)) +
@@ -105,7 +104,11 @@ server <- function(input, output) {
       geom_vline(xintercept =  diffline, color = "red", linetype = "dashed", alpha=0.5) +
       geom_hline(yintercept = diffline, color = "red", linetype = "dashed", alpha=0.5)
     
-    girafe(ggobj = plot1,options = list(opts_zoom(min = 1, max = 5) ) )
+    girafe(ggobj = plot1,
+           options = list(
+             opts_zoom(min = 1, max = 5)
+             )
+           )
   })
   
   output$successPlot <- renderGirafe({
@@ -137,7 +140,11 @@ server <- function(input, output) {
       scale_x_continuous(labels = scales::percent_format(scale = 100), limits = c(min_o_sp,max_o_sp)) +
       scale_y_continuous(labels = scales::percent_format(scale = 100), limits = c(min_d_sp,max_d_sp))
     
-    girafe(ggobj = plot2,options = list(opts_zoom(min = 1, max = 5) ) )
+    girafe(ggobj = plot2,
+           options = list(
+             opts_zoom(min = 1, max = 5)
+             )
+           )
   })
 }
 
